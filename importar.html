@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Encomendas Estocadas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous" />
+    <style>
+        /* Botões 2x maiores */
+        #container button {
+            font-size: 1.5rem;
+            /* aumenta tamanho da fonte */
+            padding: 1rem 2rem;
+            /* aumenta altura e largura */
+        }
+    </style>
+</head>
+
+<body class="bg-danger bg-opacity-25">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg border-bottom border-3 border-success">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Encomendas</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="prateleira.html">Prateleira</a>
+                    <a class="nav-link" href="sistema.html">Sistema</a>
+                    <a class="nav-link" href="comparar.html">Comparar</a>
+                    <a class="nav-link active border-bottom border-success border-1" aria-current="page"
+                        href="importar.html">Importar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- FIM DO NAVBAR -->
+
+    <div id="main" class="container mt-3 p-3 rounded-4">
+        <h1 class="text-center mb-4">REGISTROS</h1>
+
+        <div>
+            <h2 class="text-center mb-4">Encomendas na Prateleira</h2>
+
+
+            <div id="importarPrateleira"
+                class="form-floating mb-2 border border-success border-2 p-3 m-2 rounded rounded-4 bg-light d-none">
+                <textarea id="fonte" class="form-control" placeholder="Cole aqui o relatório"
+                    style="height: 120px"></textarea>
+
+
+                <button type="button" class="btn btn-primary w-100 mt-2" onclick="getText('prateleira')">Importar
+                    Registros</button>
+            </div>
+
+            <div id="prateleira"
+                class="border border-success border-2 p-3 m-2 rounded rounded-4 d-none flex-wrap gap-2 justify-content-center bg-light">
+            </div>
+        </div>
+        <div>
+            <h2 class="text-center mb-4">Encomendas no Sistema</h2>
+
+
+            <div id="importarSistema"
+                class="form-floating mb-2 border border-success border-2 p-3 m-2 rounded rounded-4 bg-light d-none">
+                <textarea id="fonte" class="form-control" placeholder="Cole aqui o relatório"
+                    style="height: 120px"></textarea>
+
+
+                <button type="button" class="btn btn-primary w-100 mt-2" onclick="getText('sistema')">Importar
+                    Registros</button>
+            </div>
+
+            <div id="sistema"
+                class="border border-success border-2 p-3 m-2 rounded rounded-4 d-none flex-wrap gap-2 justify-content-center bg-light">
+            </div>
+        </div>
+
+
+        <div id="alertArea"></div>
+
+    </div>
+
+    <footer class="d-flex justify-content-center align-items-center py-3 my-4 border-top">
+        <span class="text-body-secondary">
+            Desenvolvedor: Edson Silva
+        </span>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Função auxiliar para alternar visibilidade
+        function toggleVisibilidade(id, mostrar, modo = "d-flex") {
+            const el = document.getElementById(id);
+            el.classList.toggle("d-none", !mostrar);
+            el.classList.toggle(modo, mostrar);
+        }
+
+        // Renderiza área (prateleira ou sistema)
+        function atualizarArea(areaId, storageKey, importarId) {
+            const area = document.getElementById(areaId);
+            area.innerHTML = "";
+
+            let lista = JSON.parse(localStorage.getItem(storageKey)) || [];
+            lista.sort((a, b) => a - b);
+
+            if (lista.length > 0) {
+                // Adiciona contador de registros
+                const contador = document.createElement("h5");
+                contador.classList.add("text-center", "mb-3", "w-100");
+                contador.textContent = `Total: ${lista.length} encomendas`;
+                area.appendChild(contador);
+
+                // Renderiza botões de registros
+                lista.forEach((num, index) => {
+                    const btn = document.createElement("button");
+                    btn.textContent = num;
+                    btn.classList.add("btn", "btn-success", "m-1", "btn-lg");
+                    btn.onclick = () => mostrarConfirmacaoExclusao(num, storageKey, areaId, importarId);
+                    area.appendChild(btn);
+                });
+
+                // Botão Exportar
+                const exportBtn = document.createElement("button");
+                exportBtn.type = "button";
+                exportBtn.textContent = "Exportar";
+                exportBtn.classList.add("btn", "bg-warning", "w-100", "mb-1", "mt-3", "btn-lg", "bg-opacity-75");
+                exportBtn.onclick = () => exportar(storageKey);
+                area.appendChild(exportBtn);
+
+                // Botão Limpar Todos
+                const limparBtn = document.createElement("button");
+                limparBtn.type = "button";
+                limparBtn.textContent = "Limpar Todos";
+                limparBtn.classList.add("btn", "btn-secondary", "w-100", "mb-1", "btn-lg");
+                limparBtn.onclick = () => mostrarConfirmacao(storageKey, areaId, importarId);
+                area.appendChild(limparBtn);
+
+                toggleVisibilidade(importarId, false);
+                toggleVisibilidade(areaId, true);
+            } else {
+                // Se vazio, mostra textarea de importação
+                toggleVisibilidade(importarId, true);
+                toggleVisibilidade(areaId, false);
+            }
+        }
+
+        // Exportar registros
+        function exportar(storageKey) {
+            let lista = JSON.parse(localStorage.getItem(storageKey)) || [];
+            lista.sort((a, b) => a - b);
+
+            let texto = `Encomendas: ${lista.join(", ")}`;
+
+            navigator.clipboard.writeText(texto)
+                .then(() => {
+                    const alertArea = document.getElementById("alertArea");
+                    alertArea.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show mt-3 text-center" role="alert">
+                        <strong>Sucesso:</strong> Registros copiados!
+                        <div class="mt-2"><small>${texto}</small></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                })
+                .catch(err => {
+                    const alertArea = document.getElementById("alertArea");
+                    alertArea.innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show mt-3 text-center" role="alert">
+                        <strong>Erro:</strong> Não foi possível copiar.
+                        <div class="mt-2"><small>${err}</small></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                });
+        }
+
+        // Confirmação para limpar todos
+        function mostrarConfirmacao(storageKey, areaId, importarId) {
+            const alertArea = document.getElementById("alertArea");
+            alertArea.innerHTML = `
+            <div class="alert alert-warning alert-dismissible fade show mt-3 text-center" role="alert">
+                <strong>Confirmação:</strong> Deseja realmente limpar todos os registros?
+                <div class="mt-2">
+                    <button type="button" class="btn btn-danger btn-sm me-2" onclick="limparEncomendas('${storageKey}','${areaId}','${importarId}')">Sim, limpar</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="alert">Cancelar</button>
+                </div>
+            </div>
+        `;
+        }
+
+        function limparEncomendas(storageKey, areaId, importarId) {
+            localStorage.setItem(storageKey, JSON.stringify([]));
+            atualizarArea(areaId, storageKey, importarId);
+            document.getElementById("alertArea").innerHTML = "";
+        }
+
+        // Confirmação para excluir um registro específico
+        function mostrarConfirmacaoExclusao(num, storageKey, areaId, importarId) {
+            const alertArea = document.getElementById("alertArea");
+            alertArea.innerHTML = `
+            <div class="alert alert-warning alert-dismissible fade show mt-3 text-center" role="alert">
+                <strong>Confirmação:</strong> Deseja excluir o registro <b>${num}</b>?
+                <div class="mt-2">
+                    <button type="button" class="btn btn-danger btn-sm me-2" onclick="removerEncomenda(${num},'${storageKey}','${areaId}','${importarId}')">Sim, excluir</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="alert">Cancelar</button>
+                </div>
+            </div>
+        `;
+        }
+
+        // Remove apenas uma ocorrência
+        function removerEncomenda(num, storageKey, areaId, importarId) {
+            let lista = JSON.parse(localStorage.getItem(storageKey)) || [];
+            const index = lista.indexOf(num);
+            if (index !== -1) lista.splice(index, 1);
+
+            localStorage.setItem(storageKey, JSON.stringify(lista));
+            atualizarArea(areaId, storageKey, importarId);
+            document.getElementById("alertArea").innerHTML = "";
+        }
+
+        // Importar registros colados no textarea
+        function getText(areaId) {
+            // Mapeia corretamente os IDs dos containers
+            const importarId = areaId === "prateleira" ? "importarPrateleira" : "importarSistema";
+
+            // Seleciona o textarea dentro do container correto
+            const container = document.getElementById(importarId);
+            const textarea = container ? container.querySelector("textarea") : null;
+
+            if (!textarea) {
+                // Feedback caso o elemento não seja encontrado
+                document.getElementById("alertArea").innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show mt-3 text-center" role="alert">
+                <strong>Erro:</strong> Campo de importação não encontrado para ${areaId}.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+                return;
+            }
+
+            const texto = textarea.value.trim();
+            if (!texto) {
+                document.getElementById("alertArea").innerHTML = `
+            <div class="alert alert-warning alert-dismissible fade show mt-3 text-center" role="alert">
+                <strong>Atenção:</strong> Insira registros separados por vírgula.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+                return;
+            }
+
+            // Converte para números e filtra inválidos
+            const lista = texto
+                .split(",")
+                .map(x => parseInt(x.trim(), 10))
+                .filter(x => !isNaN(x));
+
+            // Salva na chave correta do localStorage
+            const storageKey = areaId === "prateleira" ? "encomendasEstocadas" : "encomendasSistema";
+            localStorage.setItem(storageKey, JSON.stringify(lista));
+
+            // Re-renderiza a área (assumindo que você já tem atualizarArea)
+            atualizarArea(areaId, storageKey, importarId);
+
+            // Confirmação
+            document.getElementById("alertArea").innerHTML = `
+        <div class="alert alert-success alert-dismissible fade show mt-3 text-center" role="alert">
+            <strong>Sucesso:</strong> ${lista.length} registro(s) importado(s) para ${areaId}.
+            <div class="mt-2"><small>${lista.join(", ")}</small></div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+        }
+
+
+
+        // Inicializa ao carregar a página
+        document.addEventListener("DOMContentLoaded", () => {
+            atualizarArea("prateleira", "encomendasEstocadas", "importarPrateleira");
+            atualizarArea("sistema", "encomendasSistema", "importarSistema");
+        });
+    </script>
+</body>
+
+</html>

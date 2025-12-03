@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encomendas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+  <style>
+    /* Botões 2x maiores */
+    #container button {
+      font-size: 1.5rem;
+      /* aumenta tamanho da fonte */
+      padding: 1rem 2rem;
+      /* aumenta altura e largura */
+    }
+  </style>
+</head>
+
+<body>
+  <div id="main" class="container mt-3">
+    <h1 class="text-center mb-4">Encomendas</h1>
+
+    <!-- Área de entrada (verde) -->
+    <div id="divCadastro" class="form-floating border border-success border-2 p-3 mb-3 rounded">
+      <div class="form-floating mb-2">
+        <textarea id="fonte" class="form-control" placeholder="Cole aqui o relatório" style="height: 120px"></textarea>
+        <label for="fonte">Carga inicial</label>
+      </div>
+      <button type="button" class="btn btn-primary w-100" onclick="getText()">Cadastrar</button>
+    </div>
+
+    <!-- Área para registrar encomendas não cadastradas (amarela) -->
+    <div id="divNaoCadastrada" class="form-floating border border-warning border-2 p-3 mb-3 rounded"
+      style="display:none;">
+      <div class="form-floating mb-2">
+        <input id="naoCadastrada" class="form-control" placeholder="Digite código não cadastrado">
+        <label for="naoCadastrada">Encomenda não cadastrada</label>
+      </div>
+      <button type="button" class="btn btn-warning w-100" onclick="registrarNaoCadastrada()">Registrar não
+        cadastrada</button>
+    </div>
+
+    <!-- Container dos botões cadastrados -->
+    <div id="container" class="border border-secondary p-3 rounded d-flex flex-wrap gap-3 justify-content-center">
+    </div>
+
+    <!-- Botão para gerar relatório -->
+    <div class="text-center mt-3">
+      <button type="button" class="btn btn-secondary" onclick="resumoPendentes()">Ver Relatório</button>
+    </div>
+
+    <!-- Área para exibir relatório -->
+    <div id="relatorio" class="mt-3 p-3 border border-info rounded bg-light" style="min-height:80px;">
+      <strong>Relatório:</strong>
+      <div id="pendentes"></div>
+      <div id="naoCadastradas"></div>
+      <button type="button" class="btn btn-outline-info mt-2" onclick="copiarRelatorio()">Copiar Relatório</button>
+    </div>
+  </div>
+
+  <script>
+    let contador = 0;
+    const listaNaoCadastradas = [];
+
+    function getText() {
+      const entrada = document.getElementById("fonte");
+      const texto = entrada.value;
+
+      const regex = /(\d{4})(?:\s*\((\d+)\s*vol\))?/g;
+      let match;
+      const codigos = [];
+
+      while ((match = regex.exec(texto)) !== null) {
+        const codigo = match[1];
+        const repeticoes = match[2] ? parseInt(match[2]) : 1;
+
+        if (codigo === "2025") continue;
+
+        for (let i = 0; i < repeticoes; i++) {
+          codigos.push(parseInt(codigo));
+        }
+      }
+
+      codigos.sort((a, b) => a - b);
+      codigos.forEach(codigo => gerar(codigo));
+
+      entrada.value = "";
+
+      // 🔄 troca a div verde pela amarela
+      document.getElementById("divCadastro").style.display = "none";
+      document.getElementById("divNaoCadastrada").style.display = "block";
+    }
+
+    function gerar(titulo) {
+      const container = document.getElementById('container');
+      const botao = document.createElement("button");
+
+      botao.className = "btn btn-danger btn-lg"; // botões grandes
+      botao.id = `${titulo}_${contador++}`;
+      botao.textContent = titulo;
+
+      botao.onclick = function () {
+        change(botao.id);
+      };
+
+      container.appendChild(botao);
+    }
+
+    function change(id) {
+      const botao = document.getElementById(id);
+      if (botao.classList.contains("btn-danger")) {
+        botao.classList.replace("btn-danger", "btn-success");
+      } else {
+        botao.classList.replace("btn-success", "btn-danger");
+      }
+    }
+
+    function registrarNaoCadastrada() {
+      const entrada = document.getElementById("naoCadastrada");
+      const codigo = entrada.value.trim();
+      if (codigo) {
+        listaNaoCadastradas.push(codigo);
+        entrada.value = "";
+        atualizarNaoCadastradas();
+      }
+    }
+
+    function atualizarNaoCadastradas() {
+      document.getElementById("naoCadastradas").textContent =
+        "Encomendas não cadastradas: " + (listaNaoCadastradas.length ? listaNaoCadastradas.join(", ") : "nenhuma");
+    }
+
+    function resumoPendentes() {
+      const container = document.getElementById('container');
+      const pendentes = [];
+
+      container.querySelectorAll("button").forEach(botao => {
+        if (botao.classList.contains("btn-danger")) {
+          pendentes.push(botao.textContent);
+        }
+      });
+
+      document.getElementById("pendentes").textContent =
+        "Encomendas não encontradas: " + (pendentes.length ? pendentes.join(", ") : "nenhuma");
+
+      atualizarNaoCadastradas();
+    }
+
+    function copiarRelatorio() {
+      const relatorio = document.getElementById("relatorio").innerText;
+      navigator.clipboard.writeText(relatorio)
+        .then(() => {
+          console.log("Relatório copiado!");
+        })
+        .catch(err => {
+          console.error("Erro ao copiar:", err);
+        });
+    }
+  </script>
+</body>
+
+</html>

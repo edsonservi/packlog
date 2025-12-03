@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Encomendas Estocadas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous" />
+    <style>
+        /* Botões 2x maiores */
+        #container button {
+            font-size: 1.5rem;
+            /* aumenta tamanho da fonte */
+            padding: 1rem 2rem;
+            /* aumenta altura e largura */
+        }
+    </style>
+</head>
+
+<body class="bg-primary bg-opacity-25">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg border-bottom border-3 border-success">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Encomendas</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="prateleira.html">Prateleira</a>
+                    <a class="nav-link" href="sistema.html">Sistema</a>
+                    <a class="nav-link active border-bottom border-success border-1" aria-current="page"
+                        href="comparar.html">Comparar</a>
+                    <a class="nav-link" href="importar.html">Importar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- FIM DO NAVBAR -->
+
+    <div id="main" class="container mt-3 p-3 rounded-4">
+        <h1 class="text-center mb-4">REGISTROS</h1>
+        <div>
+            <h2 class="text-center mb-4">Encomendas na prateleira que não estão no sistema</h2>
+            <div id="prateleira"
+                class="border border-success border-2 p-3 m-2 rounded rounded-4 d-flex flex-wrap gap-2 justify-content-center bg-light">
+            </div>
+        </div>
+        <div>
+            <h2 class="text-center mb-4">Encomendas no Sistema que não estão na prateleira</h2>
+            <div id="sistema"
+                class="border border-success border-2 p-3 m-2 rounded rounded-4 d-flex flex-wrap gap-2 justify-content-center bg-light">
+            </div>
+        </div>
+        <div id="alertArea"></div>
+    </div>
+    <footer class="d-flex justify-content-center align-items-center py-3 my-4 border-top">
+        <span class="text-body-secondary">
+            Desenvolvedor: Edson Silva
+        </span>
+    </footer>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <script>
+        function atualizarComparacao() {
+            const prateleiraDiv = document.getElementById("prateleira");
+            const sistemaDiv = document.getElementById("sistema");
+            prateleiraDiv.innerHTML = "";
+            sistemaDiv.innerHTML = "";
+
+            // Recupera listas do localStorage
+            let prateleira = JSON.parse(localStorage.getItem("encomendasEstocadas")) || [];
+            let sistema = JSON.parse(localStorage.getItem("encomendasSistema")) || [];
+
+            // Ordena
+            prateleira.sort((a, b) => a - b);
+            sistema.sort((a, b) => a - b);
+
+            // Função para contar ocorrências
+            function contarOcorrencias(lista) {
+                const mapa = {};
+                lista.forEach(num => {
+                    mapa[num] = (mapa[num] || 0) + 1;
+                });
+                return mapa;
+            }
+
+            const contPrateleira = contarOcorrencias(prateleira);
+            const contSistema = contarOcorrencias(sistema);
+
+            // Diferenças considerando quantidade
+            let apenasPrateleira = [];
+            let apenasSistema = [];
+
+            const todosNumeros = new Set([...prateleira, ...sistema]);
+
+            todosNumeros.forEach(num => {
+                const qtdPrat = contPrateleira[num] || 0;
+                const qtdSis = contSistema[num] || 0;
+
+                if (qtdPrat > qtdSis) {
+                    for (let i = 0; i < qtdPrat - qtdSis; i++) {
+                        apenasPrateleira.push(num);
+                    }
+                }
+                if (qtdSis > qtdPrat) {
+                    for (let i = 0; i < qtdSis - qtdPrat; i++) {
+                        apenasSistema.push(num);
+                    }
+                }
+            });
+
+            // Renderiza botões da prateleira
+            if (apenasPrateleira.length > 0) {
+                apenasPrateleira.forEach(num => {
+                    const btn = document.createElement("button");
+                    btn.textContent = num;
+                    btn.classList.add("btn", "btn-success", "m-1", "btn-lg");
+                    prateleiraDiv.appendChild(btn);
+                });
+            } else {
+                prateleiraDiv.innerHTML = "<p class='text-center text-muted'>Nenhuma diferença encontrada</p>";
+            }
+
+            // Renderiza botões do sistema
+            if (apenasSistema.length > 0) {
+                apenasSistema.forEach(num => {
+                    const btn = document.createElement("button");
+                    btn.textContent = num;
+                    btn.classList.add("btn", "bg-warning", "m-1", "btn-lg", "bg-opacity-75");
+                    sistemaDiv.appendChild(btn);
+                });
+            } else {
+                sistemaDiv.innerHTML = "<p class='text-center text-muted'>Nenhuma diferença encontrada</p>";
+            }
+
+            // Botão de exportar relatório
+            const main = document.getElementById("main");
+            let exportBtn = document.getElementById("exportBtn");
+            if (!exportBtn) {
+                exportBtn = document.createElement("button");
+                exportBtn.id = "exportBtn";
+                exportBtn.type = "button";
+                exportBtn.textContent = "Copiar Relatório de Diferenças";
+                exportBtn.classList.add("btn", "btn-primary", "w-100", "mt-3", "btn-lg");
+                exportBtn.onclick = () => exportarRelatorio(contPrateleira, contSistema);
+                main.appendChild(exportBtn);
+            }
+        }
+
+        function exportarRelatorio(contPrateleira, contSistema) {
+            let texto = "*Relatório diferença encomendas:*\n";
+
+            // Todos os números presentes em qualquer lista
+            const todosNumeros = new Set([...Object.keys(contPrateleira), ...Object.keys(contSistema)]);
+            const numerosOrdenados = Array.from(todosNumeros).map(x => parseInt(x)).sort((a, b) => a - b);
+
+            let totalErros = 0; // contador de erros
+
+            numerosOrdenados.forEach(num => {
+                const qtdPrat = contPrateleira[num] || 0;
+                const qtdSis = contSistema[num] || 0;
+
+                if (qtdPrat !== qtdSis) {
+                    if (qtdPrat > qtdSis) {
+                        const diferenca = qtdPrat - qtdSis;
+                        totalErros += diferenca;
+                        texto += `*${num}:* ${diferenca} vol não registrados no sistema - correção (registrado)\n`;
+                    } else {
+                        const diferenca = qtdSis - qtdPrat;
+                        totalErros += diferenca;
+                        texto += `*${num}:* ${diferenca} vol não encontrado - correção (dado baixa no sistema)\n`;
+                    }
+                }
+            });
+
+            // Adiciona o total de erros no cabeçalho
+            texto = `*Relatório diferença encomendas:*\n*${totalErros} erros* encontrados e corrigidos\n` + texto.split("\n").slice(1).join("\n");
+
+            // Copia para área de transferência
+            navigator.clipboard.writeText(texto)
+                .then(() => {
+                    const alertArea = document.getElementById("alertArea");
+                    alertArea.innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show mt-3 text-center" role="alert">
+                    <strong>Sucesso:</strong> Relatório copiado para a área de transferência!
+                    <div class="mt-2"><small>${texto.replace(/\\n/g, "<br>")}</small></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+                })
+                .catch(err => {
+                    const alertArea = document.getElementById("alertArea");
+                    alertArea.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show mt-3 text-center" role="alert">
+                    <strong>Erro:</strong> Não foi possível copiar os dados.
+                    <div class="mt-2"><small>${err}</small></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+                });
+        }
+
+
+
+
+
+        // Inicializa ao carregar
+        document.addEventListener("DOMContentLoaded", atualizarComparacao);
+    </script>
+</body>
+
+</html>
