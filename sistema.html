@@ -1,291 +1,475 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Encomendas Estocadas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        crossorigin="anonymous" />
-    <style>
-        /* Botões 2x maiores */
-        #container button {
-            font-size: 1.5rem;
-            /* aumenta tamanho da fonte */
-            padding: 1rem 2rem;
-            /* aumenta altura e largura */
-        }
-    </style>
-</head>
-
-<body class="bg-warning bg-opacity-25">
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg border-bottom border-3 border-success">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Encomendas</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link" href="prateleira.html">Prateleira</a>
-                    <a class="nav-link active border-bottom border-success border-1" aria-current="page"
-                        href="sistema.html">Sistema</a>
-                    <a class="nav-link" href="comparar.html">Comparar</a>
-                    <a class="nav-link" href="importar.html">Importar</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-    <!-- FIM DO NAVBAR -->
-
-    <div id="main" class="container mt-3 p-3 rounded-4">
-        <h1 class="text-center mb-4">Encomendas no Sistema</h1>
-
-        <!-- Área de entrada (verde) -->
-        <div id="divCadastro" class="form-floating border border-success border-2 p-3 m-2 rounded rounded-4 bg-light">
-            <h2 id="titulo" class="text-center mb-4">- - - -</h2>
-            <div class="form-floating mb-2">
-                <h3 id="ordem" class="text-center mb-4">Escolha o bloco</h3>
-
-                <!-- Teclado de blocos -->
-                <div id="tecladoBloco"
-                    class="border border-success p-3 rounded-3 d-flex flex-wrap gap-3 justify-content-center">
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarBloco(1)">
-                        1
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarBloco(2)">
-                        2
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarBloco(3)">
-                        3
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarBloco(4)">
-                        4
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarBloco(5)">
-                        5
-                    </button>
-                </div>
-
-                <!-- Teclado de andares (inicialmente oculto) -->
-                <div id="tecladoAndar"
-                    class="border border-success p-3 rounded-3 d-none flex-wrap gap-3 justify-content-center">
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarAndar(1)">
-                        1
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarAndar(2)">
-                        2
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarAndar(3)">
-                        3
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarAndar(4)">
-                        4
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarAndar(5)">
-                        5
-                    </button>
-                </div>
-
-                <!-- Teclado de apartamento (inicialmente oculto) -->
-                <div id="tecladoSala"
-                    class="border border-success p-3 rounded-3 d-none flex-wrap gap-3 justify-content-center">
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(1)">
-                        01
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(2)">
-                        02
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(3)">
-                        03
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(4)">
-                        04
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(5)">
-                        05
-                    </button>
-                    <div class="w-100"></div>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(6)">
-                        06
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(7)">
-                        07
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(8)">
-                        08
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(9)">
-                        09
-                    </button>
-                    <button type="button" class="btn btn-success btn-lg" onclick="cadastrarSala(10)">
-                        10
-                    </button>
-                </div>
-            </div>
-
-            <!-- Botões de ação -->
-            <button id="botaoCadastrar" type="button" class="btn btn-primary w-100 mb-1 btn-lg d-none"
-                onclick="confirmarCadastro()">
-                Cadastrar
-            </button>
-            <button id="botaoCancelar" type="button" class="btn btn-secondary w-100 mb-1 btn-lg d-none"
-                onclick="cancelarCadastro()">
-                Cancelar
-            </button>
-        </div>
-        <div id="registros"
-            class="border border-success border-2 p-3 m-2 rounded rounded-4 d-flex flex-wrap gap-2 justify-content-center bg-light">
-        </div>
-        <div id="alertArea"></div>
-
-    </div>
-    <footer class="d-flex justify-content-center align-items-center py-3 my-4 border-top">
-        <span class="text-body-secondary">
-            Desenvolvedor: Edson Silva
-        </span>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-
-    <script>
-        let blocoSelecionado = null;
-        let andarSelecionado = null;
-        let salaoSelecionado = null;
-        let encomendasSistema = JSON.parse(localStorage.getItem("encomendasSistema")) || [];
-
-        // Função auxiliar para alternar visibilidade
-        function toggleVisibilidade(id, mostrar, modo = "d-flex") {
-            const el = document.getElementById(id);
-            el.classList.toggle("d-none", !mostrar);
-            el.classList.toggle(modo, mostrar);
-        }
-
-        function cadastrarBloco(bloco) {
-            blocoSelecionado = bloco;
-            document.getElementById("titulo").textContent = blocoSelecionado;
-            document.getElementById("ordem").innerText = "Escolha o andar";
-
-            toggleVisibilidade("tecladoBloco", false);
-            toggleVisibilidade("tecladoAndar", true);
-        }
-
-        function cadastrarAndar(andar) {
-            andarSelecionado = andar;
-            document.getElementById("titulo").textContent = `${blocoSelecionado}${andarSelecionado}`;
-
-            toggleVisibilidade("tecladoAndar", false);
-            toggleVisibilidade("tecladoSala", true);
-        }
-
-        function cadastrarSala(sala) {
-            salaoSelecionado = sala;
-            document.getElementById("ordem").innerText = "Confirmar?";
-
-            const texto = sala === 10
-                ? `${blocoSelecionado}${andarSelecionado}${sala}`
-                : `${blocoSelecionado}${andarSelecionado}0${sala}`;
-
-            document.getElementById("titulo").textContent = texto;
-
-            toggleVisibilidade("tecladoSala", false);
-            toggleVisibilidade("botaoCadastrar", true, "d-block");
-            toggleVisibilidade("botaoCancelar", true, "d-block");
-        }
-
-        function confirmarCadastro() {
-            const numeroEncomenda = salaoSelecionado === 10
-                ? parseInt(`${blocoSelecionado}${andarSelecionado}${salaoSelecionado}`)
-                : parseInt(`${blocoSelecionado}${andarSelecionado}0${salaoSelecionado}`);
-
-            encomendasSistema.push(numeroEncomenda);
-            localStorage.setItem("encomendasSistema", JSON.stringify(encomendasSistema));
-
-            atualizarContainer(numeroEncomenda);
-
-            toggleVisibilidade("botaoCadastrar", false, "d-block");
-            toggleVisibilidade("botaoCancelar", false, "d-block");
-            toggleVisibilidade("tecladoBloco", true, "d-flex");
-
-            console.log(encomendasSistema);
-            document.getElementById("titulo").textContent = `${numeroEncomenda} cadastrado!`;
-            document.getElementById("ordem").innerText = "Escolha o bloco";
-
-            // Reset seleção
-            blocoSelecionado = null;
-            andarSelecionado = null;
-            salaoSelecionado = null;
-        }
-
-        function cancelarCadastro() {
-            blocoSelecionado = null;
-            andarSelecionado = null;
-            salaoSelecionado = null;
-
-            document.getElementById("titulo").textContent = "- - - -";
-            document.getElementById("ordem").innerText = "Escolha o bloco";
-
-            toggleVisibilidade("tecladoBloco", true);
-            toggleVisibilidade("tecladoAndar", false);
-            toggleVisibilidade("tecladoSala", false);
-            toggleVisibilidade("botaoCadastrar", false, "d-block");
-            toggleVisibilidade("botaoCancelar", false, "d-block");
-        }
-
-        function atualizarContainer(numero) {
-            const container = document.getElementById("registros");
-            container.innerHTML = "";
-
-            let lista = JSON.parse(localStorage.getItem("encomendasSistema")) || [];
-            lista.sort((a, b) => a - b);
-
-            lista.forEach(num => {
-                const btn = document.createElement("button");
-                btn.textContent = num;
-                if (num === numero) {
-                    btn.classList.add("btn", "btn-success", "border", "border-4", "border-danger", "m-1", "btn-lg");
-                } else {
-                    btn.classList.add("btn", "btn-success", "m-1", "btn-lg");
-                }
-                btn.onclick = () => mostrarConfirmacaoExclusao(num); // clique pede confirmação
-                container.appendChild(btn);
-            });
-
-            if (lista.length > 0) {
-                const limparBtn = document.createElement("button");
-                const exportBtn = document.createElement("button");
-
-                exportBtn.type = "button";
-                exportBtn.textContent = "Exportar";
-                exportBtn.classList.add("btn", "bg-warning", "w-100", "mb-1", "mt-3", "btn-lg", "bg-opacity-75");
-                exportBtn.onclick = exportar;
-
-                limparBtn.type = "button";
-                limparBtn.textContent = "Limpar Todas";
-                limparBtn.classList.add("btn", "btn-secondary", "w-100", "mb-1", "btn-lg");
-                limparBtn.onclick = mostrarConfirmacao;
-
-                container.appendChild(exportBtn);
-                container.appendChild(limparBtn);
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Encomendas Estocadas</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            crossorigin="anonymous"
+        />
+        <style>
+            /* Botões 2x maiores */
+            #container button {
+                font-size: 1.5rem;
+                /* aumenta tamanho da fonte */
+                padding: 1rem 2rem;
+                /* aumenta altura e largura */
             }
-        }
+        </style>
+    </head>
 
-        function exportar() {
-            let lista = JSON.parse(localStorage.getItem("encomendasSistema")) || [];
-            lista.sort((a, b) => a - b);
+    <body class="bg-warning bg-opacity-25">
+        <!-- NAVBAR -->
+        <nav
+            class="navbar navbar-expand-lg border-bottom border-3 border-success"
+        >
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">Encomendas</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link" href="prateleira.html"
+                            >Prateleira</a
+                        >
+                        <a
+                            class="nav-link active border-bottom border-success border-1"
+                            aria-current="page"
+                            href="sistema.html"
+                            >Sistema</a
+                        >
+                        <a class="nav-link" href="comparar.html">Comparar</a>
+                        <a class="nav-link" href="importar.html">Importar</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- FIM DO NAVBAR -->
 
-            // Texto formatado
-            let texto = `Encomendas nas Prateleiras: ${lista.join(", ")}`;
+        <div id="main" class="container mt-3 p-3 rounded-4">
+            <h1 class="text-center mb-4">Encomendas no Sistema</h1>
 
-            navigator.clipboard.writeText(texto)
-                .then(() => {
-                    // Mostra confirmação na div alertArea
-                    const alertArea = document.getElementById("alertArea");
-                    alertArea.innerHTML = `
+            <!-- Área de entrada (verde) -->
+            <div
+                id="divCadastro"
+                class="form-floating border border-success border-2 p-3 m-2 rounded rounded-4 bg-light"
+            >
+                <h2 id="titulo" class="text-center mb-4">- - - -</h2>
+                <div class="form-floating mb-2">
+                    <h3 id="ordem" class="text-center mb-4">Escolha o bloco</h3>
+
+                    <!-- Teclado de blocos -->
+                    <div
+                        id="tecladoBloco"
+                        class="border border-success p-3 rounded-3 d-flex flex-wrap gap-3 justify-content-center"
+                    >
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarBloco(1)"
+                        >
+                            1
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarBloco(2)"
+                        >
+                            2
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarBloco(3)"
+                        >
+                            3
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarBloco(4)"
+                        >
+                            4
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarBloco(5)"
+                        >
+                            5
+                        </button>
+                    </div>
+
+                    <!-- Teclado de andares (inicialmente oculto) -->
+                    <div
+                        id="tecladoAndar"
+                        class="border border-success p-3 rounded-3 d-none flex-wrap gap-3 justify-content-center"
+                    >
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(1)"
+                        >
+                            1
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(2)"
+                        >
+                            2
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(3)"
+                        >
+                            3
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(4)"
+                        >
+                            4
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(5)"
+                        >
+                            5
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(6)"
+                        >
+                            6
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(7)"
+                        >
+                            7
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarAndar(8)"
+                        >
+                            8
+                        </button>
+                    </div>
+
+                    <!-- Teclado de apartamento (inicialmente oculto) -->
+                    <div
+                        id="tecladoSala"
+                        class="border border-success p-3 rounded-3 d-none flex-wrap gap-3 justify-content-center"
+                    >
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(1)"
+                        >
+                            01
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(2)"
+                        >
+                            02
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(3)"
+                        >
+                            03
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(4)"
+                        >
+                            04
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(5)"
+                        >
+                            05
+                        </button>
+                        <div class="w-100"></div>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(6)"
+                        >
+                            06
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(7)"
+                        >
+                            07
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(8)"
+                        >
+                            08
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(9)"
+                        >
+                            09
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-success btn-lg"
+                            onclick="cadastrarSala(10)"
+                        >
+                            10
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botões de ação -->
+                <button
+                    id="botaoCadastrar"
+                    type="button"
+                    class="btn btn-primary w-100 mb-1 btn-lg d-none"
+                    onclick="confirmarCadastro()"
+                >
+                    Cadastrar
+                </button>
+                <button
+                    id="botaoCancelar"
+                    type="button"
+                    class="btn btn-secondary w-100 mb-1 btn-lg d-none"
+                    onclick="cancelarCadastro()"
+                >
+                    Cancelar
+                </button>
+            </div>
+            <div
+                id="registros"
+                class="border border-success border-2 p-3 m-2 rounded rounded-4 d-flex flex-wrap gap-2 justify-content-center bg-light"
+            ></div>
+            <div id="alertArea"></div>
+        </div>
+        <footer
+            class="d-flex justify-content-center align-items-center py-3 my-4 border-top"
+        >
+            <span class="text-body-secondary">
+                Desenvolvedor: Edson Silva
+            </span>
+        </footer>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"
+        ></script>
+
+        <script>
+            let blocoSelecionado = null;
+            let andarSelecionado = null;
+            let salaoSelecionado = null;
+            let encomendasSistema =
+                JSON.parse(localStorage.getItem("encomendasSistema")) || [];
+
+            // Função auxiliar para alternar visibilidade
+            function toggleVisibilidade(id, mostrar, modo = "d-flex") {
+                const el = document.getElementById(id);
+                el.classList.toggle("d-none", !mostrar);
+                el.classList.toggle(modo, mostrar);
+            }
+
+            function cadastrarBloco(bloco) {
+                blocoSelecionado = bloco;
+                document.getElementById("titulo").textContent =
+                    blocoSelecionado;
+                document.getElementById("ordem").innerText = "Escolha o andar";
+
+                toggleVisibilidade("tecladoBloco", false);
+                toggleVisibilidade("tecladoAndar", true);
+            }
+
+            function cadastrarAndar(andar) {
+                andarSelecionado = andar;
+                document.getElementById(
+                    "titulo"
+                ).textContent = `${blocoSelecionado}${andarSelecionado}`;
+
+                toggleVisibilidade("tecladoAndar", false);
+                toggleVisibilidade("tecladoSala", true);
+            }
+
+            function cadastrarSala(sala) {
+                salaoSelecionado = sala;
+                document.getElementById("ordem").innerText = "Confirmar?";
+
+                const texto =
+                    sala === 10
+                        ? `${blocoSelecionado}${andarSelecionado}${sala}`
+                        : `${blocoSelecionado}${andarSelecionado}0${sala}`;
+
+                document.getElementById("titulo").textContent = texto;
+
+                toggleVisibilidade("tecladoSala", false);
+                toggleVisibilidade("botaoCadastrar", true, "d-block");
+                toggleVisibilidade("botaoCancelar", true, "d-block");
+            }
+
+            function confirmarCadastro() {
+                const numeroEncomenda =
+                    salaoSelecionado === 10
+                        ? parseInt(
+                              `${blocoSelecionado}${andarSelecionado}${salaoSelecionado}`
+                          )
+                        : parseInt(
+                              `${blocoSelecionado}${andarSelecionado}0${salaoSelecionado}`
+                          );
+
+                encomendasSistema.push(numeroEncomenda);
+                localStorage.setItem(
+                    "encomendasSistema",
+                    JSON.stringify(encomendasSistema)
+                );
+
+                atualizarContainer(numeroEncomenda);
+
+                toggleVisibilidade("botaoCadastrar", false, "d-block");
+                toggleVisibilidade("botaoCancelar", false, "d-block");
+                toggleVisibilidade("tecladoBloco", true, "d-flex");
+
+                console.log(encomendasSistema);
+                document.getElementById(
+                    "titulo"
+                ).textContent = `${numeroEncomenda} cadastrado!`;
+                document.getElementById("ordem").innerText = "Escolha o bloco";
+
+                // Reset seleção
+                blocoSelecionado = null;
+                andarSelecionado = null;
+                salaoSelecionado = null;
+            }
+
+            function cancelarCadastro() {
+                blocoSelecionado = null;
+                andarSelecionado = null;
+                salaoSelecionado = null;
+
+                document.getElementById("titulo").textContent = "- - - -";
+                document.getElementById("ordem").innerText = "Escolha o bloco";
+
+                toggleVisibilidade("tecladoBloco", true);
+                toggleVisibilidade("tecladoAndar", false);
+                toggleVisibilidade("tecladoSala", false);
+                toggleVisibilidade("botaoCadastrar", false, "d-block");
+                toggleVisibilidade("botaoCancelar", false, "d-block");
+            }
+
+            function atualizarContainer(numero) {
+                const container = document.getElementById("registros");
+                container.innerHTML = "";
+
+                let lista =
+                    JSON.parse(localStorage.getItem("encomendasSistema")) || [];
+                lista.sort((a, b) => a - b);
+
+                lista.forEach((num) => {
+                    const btn = document.createElement("button");
+                    btn.textContent = num;
+                    if (num === numero) {
+                        btn.classList.add(
+                            "btn",
+                            "btn-success",
+                            "border",
+                            "border-4",
+                            "border-danger",
+                            "m-1",
+                            "btn-lg"
+                        );
+                    } else {
+                        btn.classList.add(
+                            "btn",
+                            "btn-success",
+                            "m-1",
+                            "btn-lg"
+                        );
+                    }
+                    btn.onclick = () => mostrarConfirmacaoExclusao(num); // clique pede confirmação
+                    container.appendChild(btn);
+                });
+
+                if (lista.length > 0) {
+                    const limparBtn = document.createElement("button");
+                    const exportBtn = document.createElement("button");
+
+                    exportBtn.type = "button";
+                    exportBtn.textContent = "Exportar";
+                    exportBtn.classList.add(
+                        "btn",
+                        "bg-warning",
+                        "w-100",
+                        "mb-1",
+                        "mt-3",
+                        "btn-lg",
+                        "bg-opacity-75"
+                    );
+                    exportBtn.onclick = exportar;
+
+                    limparBtn.type = "button";
+                    limparBtn.textContent = "Limpar Todas";
+                    limparBtn.classList.add(
+                        "btn",
+                        "btn-secondary",
+                        "w-100",
+                        "mb-1",
+                        "btn-lg"
+                    );
+                    limparBtn.onclick = mostrarConfirmacao;
+
+                    container.appendChild(exportBtn);
+                    container.appendChild(limparBtn);
+                }
+            }
+
+            function exportar() {
+                let lista =
+                    JSON.parse(localStorage.getItem("encomendasSistema")) || [];
+                lista.sort((a, b) => a - b);
+
+                // Texto formatado
+                let texto = `Encomendas nas Prateleiras: ${lista.join(", ")}`;
+
+                navigator.clipboard
+                    .writeText(texto)
+                    .then(() => {
+                        // Mostra confirmação na div alertArea
+                        const alertArea = document.getElementById("alertArea");
+                        alertArea.innerHTML = `
                 <div class="alert alert-success alert-dismissible fade show mt-3 text-center" role="alert">
                     <strong>Sucesso:</strong> Registro copiado para a área de transferência!
                     <div class="mt-2">
@@ -294,10 +478,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
                 </div>
             `;
-                })
-                .catch(err => {
-                    const alertArea = document.getElementById("alertArea");
-                    alertArea.innerHTML = `
+                    })
+                    .catch((err) => {
+                        const alertArea = document.getElementById("alertArea");
+                        alertArea.innerHTML = `
                 <div class="alert alert-danger alert-dismissible fade show mt-3 text-center" role="alert">
                     <strong>Erro:</strong> Não foi possível copiar os dados.
                     <div class="mt-2">
@@ -306,15 +490,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
                 </div>
             `;
-                });
-        }
+                    });
+            }
 
-
-
-        // Confirmação para limpar todas
-        function mostrarConfirmacao() {
-            const alertArea = document.getElementById("alertArea");
-            alertArea.innerHTML = `
+            // Confirmação para limpar todas
+            function mostrarConfirmacao() {
+                const alertArea = document.getElementById("alertArea");
+                alertArea.innerHTML = `
             <div class="alert alert-warning alert-dismissible fade show mt-3 text-center" role="alert">
                 <strong>Confirmação:</strong> Deseja realmente limpar todas as encomendas?
                 <div class="mt-2">
@@ -323,20 +505,23 @@
                 </div>
             </div>
         `;
-        }
+            }
 
-        function limparEncomendas() {
-            encomendasSistema = [];
-            localStorage.setItem("encomendasSistema", JSON.stringify(encomendasSistema));
-            atualizarContainer();
-            document.getElementById("alertArea").innerHTML = "";
-            document.getElementById("titulo").textContent = "- - - -";
-        }
+            function limparEncomendas() {
+                encomendasSistema = [];
+                localStorage.setItem(
+                    "encomendasSistema",
+                    JSON.stringify(encomendasSistema)
+                );
+                atualizarContainer();
+                document.getElementById("alertArea").innerHTML = "";
+                document.getElementById("titulo").textContent = "- - - -";
+            }
 
-        // Confirmação para excluir uma encomenda específica
-        function mostrarConfirmacaoExclusao(num) {
-            const alertArea = document.getElementById("alertArea");
-            alertArea.innerHTML = `
+            // Confirmação para excluir uma encomenda específica
+            function mostrarConfirmacaoExclusao(num) {
+                const alertArea = document.getElementById("alertArea");
+                alertArea.innerHTML = `
             <div class="alert alert-warning alert-dismissible fade show mt-3 text-center" role="alert">
                 <strong>Confirmação:</strong> Deseja excluir a encomenda <b>${num}</b>?
                 <div class="mt-2">
@@ -345,34 +530,35 @@
                 </div>
             </div>
         `;
-        }
-
-        // Remove apenas uma encomenda
-        function removerEncomenda(num) {
-            let lista = JSON.parse(localStorage.getItem("encomendasSistema")) || [];
-
-            // Encontra o índice da primeira ocorrência
-            const index = lista.indexOf(num);
-
-            if (index !== -1) {
-                // Remove apenas um elemento na posição encontrada
-                lista.splice(index, 1);
             }
 
-            // Atualiza localStorage e variável global
-            localStorage.setItem("encomendasSistema", JSON.stringify(lista));
-            encomendasSistema = lista;
+            // Remove apenas uma encomenda
+            function removerEncomenda(num) {
+                let lista =
+                    JSON.parse(localStorage.getItem("encomendasSistema")) || [];
 
-            atualizarContainer();
-            document.getElementById("alertArea").innerHTML = "";
-            document.getElementById("titulo").textContent = "- - - -";
-        }
+                // Encontra o índice da primeira ocorrência
+                const index = lista.indexOf(num);
 
+                if (index !== -1) {
+                    // Remove apenas um elemento na posição encontrada
+                    lista.splice(index, 1);
+                }
 
+                // Atualiza localStorage e variável global
+                localStorage.setItem(
+                    "encomendasSistema",
+                    JSON.stringify(lista)
+                );
+                encomendasSistema = lista;
 
-        // Inicializa ao carregar a página
-        document.addEventListener("DOMContentLoaded", atualizarContainer);
-    </script>
-</body>
+                atualizarContainer();
+                document.getElementById("alertArea").innerHTML = "";
+                document.getElementById("titulo").textContent = "- - - -";
+            }
 
+            // Inicializa ao carregar a página
+            document.addEventListener("DOMContentLoaded", atualizarContainer);
+        </script>
+    </body>
 </html>
