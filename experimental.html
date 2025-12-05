@@ -17,18 +17,46 @@
     </style>
 </head>
 
-<body class="bg-danger bg-opacity-25">
-    <div id="nav"></div>
+<body class="bg-success bg-opacity-25">
 
-    <div id="teste" class="border border-success m-3 p-3 rounded-3 d-flex flex-wrap gap-3 justify-content-center">
+    <!-- NAVBAR -->
+    <div id="nav"></div>
+    <!-- FIM DO NAVBAR -->
+
+    <div id="main" class="container mt-3 p-3 rounded-4">
+        <h1 id="referencia" class="text-center mb-4">Encomendas nas Prateleiras</h1>
+
+        <!-- Área de entrada (verde) -->
+        <div id="divCadastro" class="form-floating border border-success border-2 p-3 m-2 rounded rounded-4 bg-light">
+            <h2 id="titulo" class="text-center mb-4">- - - -</h2>
+            <h3 id="display" class="text-center mb-4">Escolha o bloco</h3>
+
+            <!-- Teclado de blocos -->
+            <div id="teclado" class="border border-success p-3 rounded-3 d-flex flex-wrap gap-3 justify-content-center">
+
+            </div>
+            <button id="botaoCadastrar" type="button" class="btn btn-primary w-25 btn-lg d-block mx-auto my-2"
+                onclick="limparCadastro()">
+                Limpar Cadastro
+            </button>
+
+        </div>
+
+
+        <div id="alertArea"></div>
     </div>
+
+    <div id="footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             renderNav("experimental");
-            renderButton("teste", "1");
-            renderButton("teste", "2");
-            renderButton("teste", "3");
+            renderFooter();
+            renderizarCondicional();
         });
 
     </script>

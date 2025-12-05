@@ -136,11 +136,7 @@
         <div id="alertArea"></div>
     </div>
 
-    <footer class="d-flex justify-content-center align-items-center py-3 my-4 border-top">
-        <span class="text-body-secondary">
-            Desenvolvedor: Edson Silva
-        </span>
-    </footer>
+    <div id="footer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -422,6 +418,7 @@
         document.addEventListener("DOMContentLoaded", atualizarContainer);
         document.addEventListener("DOMContentLoaded", () => {
             renderNav("prateleira");
+            renderFooter();
         });
 
     </script>

@@ -87,3 +87,27 @@ function renderNav(page) {
   // Adiciona ao destino
   target.appendChild(nav);
 }
+
+function renderFooter() {
+  const footer = document.getElementById("footer");
+
+  // Cria o <footer>
+  const footerEl = document.createElement("footer");
+  footerEl.classList.add(
+    "d-flex",
+    "justify-content-center",
+    "align-items-center",
+    "py-3",
+    "my-4",
+    "border-top"
+  );
+
+  // Cria o <span>
+  const span = document.createElement("span");
+  span.classList.add("text-body-secondary");
+  span.textContent = "Desenvolvedor: Edson Silva";
+
+  // Monta a estrutura
+  footerEl.appendChild(span);
+  footer.appendChild(footerEl);
+}
