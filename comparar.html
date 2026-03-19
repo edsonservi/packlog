@@ -96,6 +96,9 @@
                 }
             });
 
+            apenasPrateleira.sort((a, b) => a - b); // ORDENAÇÃO ADICIONADA
+            apenasSistema.sort((a, b) => a - b);    // ORDENAÇÃO ADICIONADA
+
             // Renderiza botões da prateleira
             if (apenasPrateleira.length > 0) {
                 apenasPrateleira.forEach(num => {
